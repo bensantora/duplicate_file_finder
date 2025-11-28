@@ -1,0 +1,12 @@
+[package]
+name = "dupe-finder"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+eframe = "0.29"
+egui = "0.29"
+walkdir = "2.5"
+sha2 = "0.10"
+hex = "0.4"
+rfd = "0.15"
