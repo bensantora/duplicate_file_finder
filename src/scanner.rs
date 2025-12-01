@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{self, Read};
 use std::path::{Path, PathBuf};
-use walkdir::WalkDir;
+use walkdir::{DirEntry, WalkDir};
 use sha2::{Sha256, Digest};
 
 #[derive(Clone, Debug)]
@@ -18,6 +18,13 @@ pub struct ScanProgress {
     pub current_file: String,
 }
 
+fn is_hidden(entry: &DirEntry) -> bool {
+    entry.file_name()
+        .to_str()
+        .map(|s| s.starts_with('.'))
+        .unwrap_or(false)
+}
+
 pub fn scan_directory<F>(dir: &str, progress_callback: F) -> Vec<Vec<FileInfo>>
 where
     F: Fn(ScanProgress) + Send + 'static,
@@ -25,8 +32,12 @@ where
     let mut files_by_size: HashMap<u64, Vec<PathBuf>> = HashMap::new();
     let mut total_files = 0;
 
-    // First pass: collect files and group by size
-    for entry in WalkDir::new(dir).into_iter().filter_map(|e| e.ok()) {
+    // Walk directory, skipping hidden files and directories
+    let walker = WalkDir::new(dir)
+        .into_iter()
+        .filter_entry(|e| !is_hidden(e));
+
+    for entry in walker.filter_map(|e| e.ok()) {
         if entry.file_type().is_file() {
             if let Ok(metadata) = entry.metadata() {
                 let size = metadata.len();
@@ -38,7 +49,6 @@ where
         }
     }
 
-    // Filter out unique sizes
     let potential_duplicates: Vec<_> = files_by_size
         .into_iter()
         .filter(|(_, paths)| paths.len() > 1)
@@ -46,16 +56,15 @@ where
 
     let mut duplicates: Vec<Vec<FileInfo>> = Vec::new();
     let mut processed_count = 0;
-    
-    // Second pass: hash files with same size
+
     for (size, paths) in potential_duplicates {
         let mut files_by_hash: HashMap<String, Vec<PathBuf>> = HashMap::new();
-        
+
         for path in paths {
             processed_count += 1;
             progress_callback(ScanProgress {
                 current: processed_count,
-                total: total_files, // This is an approximation since we filtered some out, but good enough for UI
+                total: total_files,
                 current_file: path.display().to_string(),
             });
 
@@ -66,7 +75,8 @@ where
 
         for (_, paths) in files_by_hash {
             if paths.len() > 1 {
-                let group: Vec<FileInfo> = paths.into_iter()
+                let group: Vec<FileInfo> = paths
+                    .into_iter()
                     .map(|path| FileInfo { path, size })
                     .collect();
                 duplicates.push(group);
