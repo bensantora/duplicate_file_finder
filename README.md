@@ -58,6 +58,8 @@ Notes:
 
 ## Usage
 
+*** Be careful when bulk deleting files that you do not delete system or other important files!***
+
 1. Start the app.
 2. Click "Browse" and select the directory you want to scan.
 3. Click "Scan Directory".
