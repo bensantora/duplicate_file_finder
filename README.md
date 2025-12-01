@@ -1,23 +1,6 @@
 # Duplicate File Finder
 
-A simple cross-platform GUI application written in Rust that finds duplicate files by size and SHA-256 content hash. Built with eframe/egui for the user interface, WalkDir for filesystem traversal, and sha2 for hashing. DupeFinder helps you identify duplicate files and safely remove unwanted copies.
-
----
-
-## Table of contents
-
-- [Features](#features)
-- [Screenshot](#screenshot)
-- [Why use this tool](#why-use-this-tool)
-- [How it works](#how-it-works)
-- [Requirements](#requirements)
-- [Build & run](#build--run)
-- [Usage](#usage)
-- [Safety notes](#safety-notes)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
+Written in Rust 
 
 ---
 
@@ -33,27 +16,6 @@ A simple cross-platform GUI application written in Rust that finds duplicate fil
   - Toggle individual files as "Keep"
   - Delete unchecked files for a group or all groups
 - Shows estimated potential disk space savings
-- Safe deletion behavior with UI feedback and error reporting
-
----
-
-## Why use this tool
-
-- Fast: avoids hashing files of unique sizes and hashes only plausible duplicates
-- Accurate: uses a strong SHA-256 hash for content equality
-- User friendly: visual UI makes it simple to inspect duplicates before deleting
-- Cross-platform: runs anywhere Rust and the used crates support (Windows, macOS, Linux)
-
----
-
-## How it works (high level)
-
-1. Walk the selected directory and collect files grouped by size.
-2. Ignore sizes with only one file (cannot be duplicates).
-3. For each size with multiple files, compute SHA-256 hashes and group by hash.
-4. Present groups with more than one file to the user.
-5. User selects which files to keep; unchecked files are candidates for deletion.
-6. Deletions are performed via standard filesystem calls and errors are reported in the UI.
 
 ---
 
@@ -121,30 +83,6 @@ The status area shows success messages or errors from failed filesystem operatio
 - The algorithm groups by size first and then uses SHA-256; this reduces false positives and avoids unnecessary hashing.
 
 ---
-
-## Troubleshooting
-
-- Long scan times:
-  - Scanning and hashing large directories with many files can take time — use Release mode for better speed.
-  - Exclude large read-only directories if not needed.
-- Permissions errors when deleting:
-  - Run the app with appropriate permissions or change file permissions.
-  - Locked files (e.g., open by another program) may fail to delete.
-- Missing GUI on headless systems:
-  - eframe/egui apps require a desktop environment. Use a machine with a graphical session.
-- High memory or CPU usage:
-  - Hashing is CPU-bound. Run in release mode to minimize overhead. Consider scanning smaller batches.
-
-
-## Contributing
-
-Contributions are welcome! Suggested ways to contribute:
-
-- Improve UI/UX (sorting, grouping, previews)
-- Add a dry-run / "move to trash" option instead of permanent deletion
-- Add an exclusion list for file patterns or paths
-- Improve progress reporting (accurate total hashed vs. estimated)
-- Add unit and integration tests
 
 ## License
 
