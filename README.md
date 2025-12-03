@@ -1,4 +1,4 @@
-# Duplicate File Finder
+# GUI_dupe_seeker
 
 Written in Rust 
 
@@ -38,7 +38,7 @@ Written in Rust
 Clone the repository and use cargo to build or run.
 
 1. Clone:
-   git clone https://github.com/your-username/dupefinder.git
+   git clone https://github.com/your-username/GUI_dupe_seeker.git
    cd dupefinder
 
 2. Run in debug:
@@ -48,7 +48,7 @@ Clone the repository and use cargo to build or run.
    cargo build --release
 
 4. Run the release binary:
-   ./target/release/dupefinder
+   ./target/release/GUI_dupe_seeker
 
 Notes:
 - For the best performance, use `--release`.
@@ -78,8 +78,7 @@ The status area shows success messages or errors from failed filesystem operatio
 ## Safety notes
 
 - Deletion is irreversible via the app. Please make sure:
-  - You have backups of important data, or
-  - You review duplicates carefully before deleting.
+  - You have backups of important data and/or review duplicates carefully before deleting.
 - Consider running a scan and inspecting groups without deleting first.
 - The app attempts file deletions using standard filesystem APIs; permission errors or locked files will be reported.
 - The algorithm groups by size first and then uses SHA-256; this reduces false positives and avoids unnecessary hashing.
@@ -99,3 +98,6 @@ MIT License
 - sha2 — SHA-256 hashing
 - hex — hex encoding of hashes
 - rfd — native file dialogs
+
+## Creator
+Ben Santora
